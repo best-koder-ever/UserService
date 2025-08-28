@@ -40,4 +40,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: user-service-build
-        path: bin/Release/net8.0/
+        path: src/UserService/bin/Release/net8.0/
