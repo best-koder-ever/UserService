@@ -18,27 +18,43 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: � Debug repository structure
+    - name: 🔍 Debug - Show file structure
       run: |
-        echo "=== REPO ROOT ==="
-        ls -la
-        echo "=== SRC FOLDER ==="
-        ls -la src/ || echo "No src folder"
-        echo "=== LOOKING FOR .CSPROJ FILES ==="
-        find . -name "*.csproj" -type f
+        echo "=== Root files ==="
+        ls -la *.csproj 2>/dev/null || echo "No .csproj in root"
+        echo "=== src folder ==="
+        ls -la src/ 2>/dev/null || echo "No src folder"
+        echo "=== src/UserService ==="
+        ls -la src/UserService/ 2>/dev/null || echo "No src/UserService"
 
-    - name: �📦 Restore dependencies
-      run: dotnet restore src/UserService/UserService.csproj
+    - name: 📦 Restore dependencies (try both locations)
+      run: |
+        if [ -f "user-service.csproj" ]; then
+          echo "Using root project file"
+          dotnet restore user-service.csproj
+        elif [ -f "src/UserService/UserService.csproj" ]; then
+          echo "Using nested project file"
+          dotnet restore src/UserService/UserService.csproj
+        else
+          echo "ERROR: No project file found!"
+          exit 1
+        fi
 
     - name: 🏗️ Build project
-      run: dotnet build src/UserService/UserService.csproj --no-restore --configuration Release
-
-    - name: 🧪 Run tests (if any)
       run: |
-        echo "Skipping tests for now - focusing on successful build"
+        if [ -f "user-service.csproj" ]; then
+          dotnet build user-service.csproj --no-restore --configuration Release
+        elif [ -f "src/UserService/UserService.csproj" ]; then
+          dotnet build src/UserService/UserService.csproj --no-restore --configuration Release
+        fi
+
+    - name: 🧪 Run tests
+      run: echo "Skipping tests for now - focusing on build success"
 
     - name: 📤 Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: user-service-build
-        path: bin/Release/net8.0/
+        path: |
+          bin/Release/net8.0/
+          src/UserService/bin/Release/net8.0/
