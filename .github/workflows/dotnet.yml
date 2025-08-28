@@ -18,11 +18,20 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: 📦 Restore dependencies
-      run: dotnet restore user-service.csproj
+    - name: � Debug repository structure
+      run: |
+        echo "=== REPO ROOT ==="
+        ls -la
+        echo "=== SRC FOLDER ==="
+        ls -la src/ || echo "No src folder"
+        echo "=== LOOKING FOR .CSPROJ FILES ==="
+        find . -name "*.csproj" -type f
+
+    - name: �📦 Restore dependencies
+      run: dotnet restore src/UserService/UserService.csproj
 
     - name: 🏗️ Build project
-      run: dotnet build user-service.csproj --no-restore --configuration Release
+      run: dotnet build src/UserService/UserService.csproj --no-restore --configuration Release
 
     - name: 🧪 Run tests (if any)
       run: |
