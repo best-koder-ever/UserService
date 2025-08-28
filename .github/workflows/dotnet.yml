@@ -40,21 +40,17 @@ jobs:
           exit 1
         fi
 
+    - name: 🧹 Clean workspace for build
+      run: |
+        # Remove test files and obj folders that cause conflicts
+        rm -rf src/UserService.Tests* || true
+        rm -rf obj bin || true
+        rm -rf src/*/obj src/*/bin || true
+        echo "Cleaned workspace"
+
     - name: 🏗️ Build project  
       run: |
-        if [ -f "user-service.csproj" ]; then
-          # Temporarily move test files out of the way to avoid compilation issues  
-          if [ -d "src/UserService.Tests" ]; then
-            mv src/UserService.Tests src/UserService.Tests.backup
-          fi
-          dotnet build user-service.csproj --no-restore --configuration Release
-          # Restore test files
-          if [ -d "src/UserService.Tests.backup" ]; then
-            mv src/UserService.Tests.backup src/UserService.Tests
-          fi
-        elif [ -f "src/UserService/UserService.csproj" ]; then
-          dotnet build src/UserService/UserService.csproj --no-restore --configuration Release
-        fi
+        dotnet build user-service.csproj --no-restore --configuration Release
 
     - name: 🧪 Run tests
       run: echo "Skipping tests for now - focusing on build success"
