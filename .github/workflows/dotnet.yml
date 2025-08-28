@@ -19,10 +19,10 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: 📦 Restore dependencies
-      run: dotnet restore user-service.sln
+      run: dotnet restore src/UserService/UserService.csproj
 
-    - name: 🏗️ Build solution
-      run: dotnet build user-service.sln --no-restore --configuration Release
+    - name: 🏗️ Build project
+      run: dotnet build src/UserService/UserService.csproj --no-restore --configuration Release
 
     - name: 🧪 Run tests (if any)
       run: |

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "sfuCWrbZ7gzdczMJSwRFkZ4ctghzFuC26xp5DGPGxnzQL26dIDyYLUP0cmT8HlCN5jjCatZIzl+EmgmSGz1oPQ==",
+  "dgSpecHash": "2Urx044NBeHBkcsj1JTNZ3L4HjQ7Pav1mGNhNtRBpK2F/FKnba7m3HPxPJ/tgr1WZOaYn8OJHiG/vCoqIRtuAw==",
   "success": true,
   "projectFilePath": "/home/m/development/DatingApp/user-service/src/UserService.Tests/UserService.Tests.csproj",
   "expectedPackageFiles": [
