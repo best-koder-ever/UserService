@@ -1,4 +1,5 @@
 name: 👤 User Service CI/CD
+
 on:
   push:
     branches: [ main, develop ]
@@ -9,6 +10,7 @@ on:
 jobs:
   test-and-build:
     runs-on: ubuntu-latest
+
     steps:
     - name: 📥 Checkout code
       uses: actions/checkout@v4
@@ -18,32 +20,17 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: 🔍 Debug - Show file structure
-      run: |
-        echo "=== Root files ==="
-        ls -la *.csproj 2>/dev/null || echo "No .csproj in root"
-        echo "=== src folder ==="
-        ls -la src/ 2>/dev/null || echo "No src folder"
-        echo "=== src/UserService ==="
-        ls -la src/UserService/ 2>/dev/null || echo "No src/UserService"
-
-    - name: 🧹 Clean workspace
-      run: |
-        rm -rf obj bin
-        rm -rf src/UserService/obj src/UserService/bin
-        rm -rf src/UserService.Tests/obj src/UserService.Tests/bin
-
-    - name: 📦 Restore dependencies
-      run: dotnet restore src/UserService/UserService.csproj
+    - name:  Restore dependencies
+      run: dotnet restore
 
     - name: 🏗️ Build
-      run: dotnet build src/UserService/UserService.csproj --configuration Release --no-restore
+      run: dotnet build --configuration Release --no-restore
 
     - name: 🧪 Run tests
-      run: dotnet test src/UserService.Tests/UserService.Tests.csproj --configuration Release --no-build --verbosity normal
+      run: dotnet test --configuration Release --no-build --verbosity normal
 
     - name: 📤 Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: user-service-build
-        path: src/UserService/bin/Release/net8.0/
+        name: user-service
+        path: bin/Release/net8.0/
