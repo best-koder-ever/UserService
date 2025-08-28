@@ -19,10 +19,10 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: 📦 Restore dependencies
-      run: dotnet restore src/UserService/UserService.csproj
+      run: dotnet restore user-service.csproj
 
     - name: 🏗️ Build project
-      run: dotnet build src/UserService/UserService.csproj --no-restore --configuration Release
+      run: dotnet build user-service.csproj --no-restore --configuration Release
 
     - name: 🧪 Run tests (if any)
       run: |
@@ -32,4 +32,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: user-service-build
-        path: src/UserService/bin/Release/net8.0/
+        path: bin/Release/net8.0/
