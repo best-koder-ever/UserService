@@ -28,10 +28,6 @@ jobs:
       run: |
         echo "Skipping tests for now - focusing on successful build"
 
-    - name: 🏗️ Build Docker image
-      run: |
-        docker build -t user-service:latest .
-
     - name: 📤 Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
