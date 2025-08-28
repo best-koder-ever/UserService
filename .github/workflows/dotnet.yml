@@ -48,6 +48,9 @@ jobs:
         rm -rf src/*/obj src/*/bin || true
         echo "Cleaned workspace"
 
+    - name: 📦 Restore after cleaning
+      run: dotnet restore user-service.csproj
+
     - name: 🏗️ Build project  
       run: |
         dotnet build user-service.csproj --no-restore --configuration Release
