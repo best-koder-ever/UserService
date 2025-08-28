@@ -27,41 +27,23 @@ jobs:
         echo "=== src/UserService ==="
         ls -la src/UserService/ 2>/dev/null || echo "No src/UserService"
 
-    - name: 📦 Restore dependencies (try both locations)
+    - name: 🧹 Clean workspace
       run: |
-        if [ -f "user-service.csproj" ]; then
-          echo "Using root project file"
-          dotnet restore user-service.csproj
-        elif [ -f "src/UserService/UserService.csproj" ]; then
-          echo "Using nested project file"
-          dotnet restore src/UserService/UserService.csproj
-        else
-          echo "ERROR: No project file found!"
-          exit 1
-        fi
+        rm -rf obj bin
+        rm -rf src/UserService/obj src/UserService/bin
+        rm -rf src/UserService.Tests/obj src/UserService.Tests/bin
 
-    - name: 🧹 Clean workspace for build
-      run: |
-        # Remove test files and obj folders that cause conflicts
-        rm -rf src/UserService.Tests* || true
-        rm -rf obj bin || true
-        rm -rf src/*/obj src/*/bin || true
-        echo "Cleaned workspace"
+    - name: 📦 Restore dependencies
+      run: dotnet restore src/UserService/UserService.csproj
 
-    - name: 📦 Restore after cleaning
-      run: dotnet restore user-service.csproj
-
-    - name: 🏗️ Build project  
-      run: |
-        dotnet build user-service.csproj --no-restore --configuration Release
+    - name: 🏗️ Build
+      run: dotnet build src/UserService/UserService.csproj --configuration Release --no-restore
 
     - name: 🧪 Run tests
-      run: echo "Skipping tests for now - focusing on build success"
+      run: dotnet test src/UserService.Tests/UserService.Tests.csproj --configuration Release --no-build --verbosity normal
 
     - name: 📤 Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: user-service-build
-        path: |
-          bin/Release/net8.0/
-          src/UserService/bin/Release/net8.0/
+        path: src/UserService/bin/Release/net8.0/
