@@ -40,10 +40,18 @@ jobs:
           exit 1
         fi
 
-    - name: 🏗️ Build project
+    - name: 🏗️ Build project  
       run: |
         if [ -f "user-service.csproj" ]; then
+          # Temporarily move test files out of the way to avoid compilation issues  
+          if [ -d "src/UserService.Tests" ]; then
+            mv src/UserService.Tests src/UserService.Tests.backup
+          fi
           dotnet build user-service.csproj --no-restore --configuration Release
+          # Restore test files
+          if [ -d "src/UserService.Tests.backup" ]; then
+            mv src/UserService.Tests.backup src/UserService.Tests
+          fi
         elif [ -f "src/UserService/UserService.csproj" ]; then
           dotnet build src/UserService/UserService.csproj --no-restore --configuration Release
         fi
