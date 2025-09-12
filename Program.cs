@@ -23,11 +23,21 @@ builder.Services.AddCors(options =>
 });
 
 // Add services to the container.
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        new MySqlServerVersion(new Version(8, 0, 30))
-    ));
+if (Environment.GetEnvironmentVariable("DEMO_MODE") == "true")
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseInMemoryDatabase("UserServiceDemo"));
+    Console.WriteLine("UserService using in-memory database for demo mode");
+}
+else
+{
+    builder.Services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseMySql(
+            builder.Configuration.GetConnectionString("DefaultConnection"),
+            new MySqlServerVersion(new Version(8, 0, 30))
+        ));
+    Console.WriteLine("UserService using MySQL database for production mode");
+}
 
 // Register application services
 builder.Services.AddScoped<IPhotoService, PhotoService>();
@@ -102,7 +112,17 @@ app.UseStaticFiles();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.Migrate();
+    
+    // Only migrate if using a relational database (not in-memory)
+    if (dbContext.Database.IsRelational())
+    {
+        dbContext.Database.Migrate();
+        Console.WriteLine("UserService: Applied database migrations");
+    }
+    else
+    {
+        Console.WriteLine("UserService: Using in-memory database, skipping migrations");
+    }
 }
 
 // Configure the HTTP request pipeline.
