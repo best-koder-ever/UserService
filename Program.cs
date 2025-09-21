@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -146,4 +147,9 @@ app.UseCors(policy =>
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+// Add health check endpoint
+app.MapGet("/health", async context =>
+{
+    await context.Response.WriteAsync("Healthy");
+});
 app.Run();
